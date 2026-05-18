@@ -1,1 +1,1 @@
-Cosita de POO en C++ 
+Repositorio para Mips 32 ensamblador (asm)
