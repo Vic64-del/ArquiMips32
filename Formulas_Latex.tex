@@ -1,0 +1,67 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Prestaciones y Ley de Amdhal}
+\author{Victor Pinto}
+
+\begin{document}
+\maketitle
+
+
+
+\section{Conceptos importantes}
+El presente documento es un glosario de terminos y formulas que nos describen el concepto de prestaciones de un computador, metrica con la cual puede conocerse la rapidez con que la maquina realiza tareas, y poder comparar sus estadisticas con otros computadores.
+
+1. Tiempo de Ejecucion: Se define como el tiempo total requerido por la computadora para completar una tarea, incluyendo las operaciones del disco duro, accesos a la memoria, la entrada y la salida, entre otros.
+
+2. Ancho de banda o Productividad: Viene dado por el numero de tareas que un computador realiza por unidad de tiempo, esto es, en un periodo de tiempo definido.
+
+3. Tiempo de CPU: Cantidad de tiempo que tarda el la CPU en terminar una tarea, sin incluir otras operaciones
+
+4. Ciclos de Reloj: Tiempo de un periodo de reloj, el cual avanza a velocidad constante
+
+5. Ciclos de Reloj por instruccion: Numero medio de ciclos de reloj que necesita una instruccion para ejecutarse (CPI)
+
+6. Ley de Amdhal: Establece que el aumento de las prestaciones con una mejora determianda esta limitada por el uso que se le de a dicha mejora
+
+\section{Formulas}
+A continuacion se desglosan las formulas:
+
+\[{Prestaciones}_{x} = \ \frac{1}{{Tiempo\ de\ Ejecucion}_{x}}\]
+
+\[{Prestaciones}_{x} > \ {Prestaciones}_{y}\]
+
+\[\frac{1}{{Tiempo\ de\ Ejecucion}_{x}} > \ \frac{1}{{Tiempo\ de\ Ejecucion}_{y}}\]
+
+\[{Tiempo\ de\ Ejecucion}_{y} > \ {Tiempo\ de\ Ejecucion}_{x}\]
+
+Para relacionar dos maquinas diferentes
+
+\[\frac{{Prestaciones}_{x}}{{Prestaciones}_{y}} = n\]
+
+Si X es n veces más rápida que Y, entonces el tiempo de ejecución de Y
+es n veces
+
+mayor que el de X
+
+\(\frac{{Prestaciones}_{x}}{{Prestaciones}_{y}} = \ \frac{{Tiempo\ de\ Ejecucion}_{y}}{{Tiempo\ de\ Ejecucion}_{x}}\  = n\)
+
+\[Tiempo\ \ de\ ejecucion\ de\ CPU\ para\ program.\  = \ Ciclos\ de\ reloj\ de\ la\ CPU*Tiemp.\ Ciclo\ Reloj\]
+
+\[Ciclos\ de\ Reloj\ del\ CPU = Instrucciones\ de\ program*Media\ de\ ciclos\ por\ instrucc\]
+
+\[Tiempo\ de\ Ejecucion = Num\ de\ instrucciones*CPI*Tiempo\ de\ Ciclo\]
+
+\[Tiempo\ de\ Ejecucion = \frac{Num\ de\ instrucciones*CPI\ }{Frecuencia\ de\ reloj}\]
+
+Ley de Amdhal :
+
+\[Tiempo\ de\ ejecucion\ tras\ mejora = \ \frac{Tiempo\ de\ ejecucion\ por\ la\ mejora}{Cantidad\ de\ mejora} + Tiempo\ de\ ejec\ no\ afectado\]
+
+
+
+
+
+\end{document}
