@@ -1,0 +1,424 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[14pt]{extarticle}
+\usepackage{extsizes}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\textbf{Base de Datos}
+
+\textbf{Daniel Rodulfo, Víctor Pinto}
+
+\begin{itemize}
+\item
+  \textbf{Introducción}
+\end{itemize}
+
+\begin{quote}
+En el presente documento, abordaremos la definición informática de lo
+que es una base de datos. Comenzaremos con los conceptos mas básicos, su
+evolución y el estado actual de esta rama de la computación, hasta
+establecer una lista de componentes con el cual armar una base de datos
+de propósito general con un presupuesto delimitado.
+\end{quote}
+
+\begin{itemize}
+\item
+  \textbf{Que es una base de datos}
+\end{itemize}
+
+\begin{quote}
+Una base de datos se define como un conjunto de datos estructurados de
+tal manera que puedan ser accedidos con facilidad y rapidez, asi como
+gestionados o consultados por un equipo informático.
+
+Una base de datos debe contar con una organización que no comprometa su
+seguridad, permita la búsqueda eficiente y la recuperación de la
+información.
+
+La base de datos por si sola se encarga unicamente de almacenar la
+información, con lo cual se requiere de un programa, ajeno a la base en
+si, cuya tarea consista en gestionar como se almacenan los datos,
+quienes pueden acceder a ella o a datos específicos, permisos y las
+operaciones que se pueden aplicar sobre los datos.
+\textbackslash\textbackslash{}
+
+El software encargado de administrar y regular la base de datos se le
+conoce como database management system (DBMS). Este posee un repertorio
+de opciones básicas con las cuales puede alterar una base de datos en
+concreto: crear, leer, actualizar y eliminar datos. La nomenclatura de
+estas operaciones dependera del lenguaje de consulta que se emplee.
+
+Las bases de datos son ampliamente utilizadas en toda clase de sectores
+en donde se necesite almacenar información y disponer de esta con
+celeridad. Desde sistemas bancarios, analisis de datos y nube,
+aplicaciones moviles e industriales, entre otros.
+
+Debido a que la manera en que una base de datos almacena su información
+puede variar segun lo deseado, existen diferentes tipos de bases de
+datos, como las jerárquicas, las de objetos, relacionales, y una
+variedad de categorias que se ajustan al como accedemos a la información
+de la base de datos y el propósito de
+esta.\textbackslash\textbackslash{}
+
+Dentro de una base de datos, la estructuración no es lo único que puede
+cambiar, sino tambien los datos que la base almacena. Si estos datos
+disponen de un formato especifico y definido, estaremos hablando
+entonces de datos estructurados, los cuales se almacenan dentro de una
+base de datos relacional. Estos formatos, que pueden ser fechas,
+números, caracteres y cadenas, posibilita la relación entre los datos,
+esto es, que existe una similitud en formato de los datos dentro de la
+base de datos. Cuando los datos carecen de un formato común y
+especifico, estaremos tratando con datos datos no estructurados, que se
+guardaran en bases de datos no relacionales. Estos pueden ser
+documentos, ficheros y multimedia, y suelen tratarse con NoSQL.
+
+\textbf{Bases de Datos Relacionales}: En una base de datos relacional,
+los datos se almacenan en filas y columnas en tablas diferenciadas,
+pudiendo acceder a los datos mediante algoritmos de búsqueda que
+identifican etiquetas de relación únicas, las llamadas claves.
+
+\textbf{Lenguaje de consulta SQL:} Las bases de datos relacionales
+utilizan un modelo de consulta estructurado, tambien llamado SQL, para
+buscar, alterar o eliminar la información. Un lenguaje de base de datos
+puede ser de definición o de manipulación de los datos. Los lenguajes de
+manipulación incluyen los lenguajes procedurales, que permiten utilizar
+iteraciones o recursividad. SQL es un lenguaje de definición, pero puede
+integrarse dentro de lenguajes host procedurales, como C++, Java o
+Python.
+
+\textbf{Bases de datos no relacionales:} Se utilizan para manejar datos
+masivos de manera dinámica, sin usar el formato de fila y columna.
+Cuentan con una gran escalabilidad y pueden emplear esquemas mas
+flexibles.
+
+\textbf{Características} de las Bases de datos:
+
+Las características de una base de datos puede diferir de otra, aun asi
+existen pautas que siempre van a ser convenientes para el diseño de una
+base de datos.
+
+\textbf{Consistencia:} La consistencia se basa en el modelo ACID y el
+modelo BASE, los cuales aseguran que los datos se guardaran de forma
+coherente y segura, sin que se corrompan en ningún modo
+
+\textbf{Normalización:} Consiste en que, al momento de organizar la
+información en una base de datos, se crean tambien tablas, relaciones y
+reglas para proteger los datos y evitar la redundancia de estos.
+
+\textbf{Persistencia:} La persistencia garantiza que cualquier
+información pueda recuperarse incluso aunque el sistema que la estaba
+consultado se desconecta.
+
+\textbf{Escalabilidad:} Una base de datos debe mantenerse estable aun
+cuando sus datos crezcan enormemente, siendo capaz de gestionar un mayor
+volumen de datos de manera coherente
+
+\textbf{Integridad:} La seguridad de los datos, su coherencia y su
+precisión deben garantizarse para formar una buena base de datos
+
+\textbf{Cardinalidad:} Se refiere a la relación que tiene una tabla
+dentro de una base de datos con otra tabla. Por ejemplo, si es de muchos
+a muchos, de uno a uno, o cual relación pueda describirse con otros
+datos
+\end{quote}
+
+\begin{itemize}
+\item
+  \textbf{Breve historia de las bases de datos}
+\end{itemize}
+
+\begin{quote}
+Durante los 60, la gestión de los datos de manera electrónica se fue
+volviendo cada vez mas compleja, pues se debía supervisar y repartir
+permisos constantemente. Fue entonces cuando se comenzó a divisar una el
+concepto de una capa separada del software y el sistema operativo.
+Comenzaron a implementarse modelos de bases de datos jerárquicos y de
+red, que eran poco flexibles y sumamente simples. IBM revoluciono la
+industria al introducir un sistema de base de datos relacional en los
+70s.
+
+Posteriormente, durante los 80s, llegaron al mercado los lenguajes de
+consulta de bases de datos como SQL y los sucesores de IBM.
+
+Para los 2000s se popularizaron los lenguajes NoSQL junto a proyectos de
+codigo libre que aportaban sus propias contribuciones al mercado, como
+MySQL y PostgreSQL.
+
+Evolución de los Modelos de bases de datos:
+
+\textbf{Jerárquico}: Se trata del modelo mas antiguo. En este modelo,
+hay una escala del tipo árbol, en donde los nodos padres engendran nodos
+hijos, ordenados en jerarquía. Los niveles de una jerarquía no estan
+relacionados, y los nodos hijos siempre debian derivar de un nodo padre.
+Es un modelo inflexible por su estructura, a cambio de ser facil de
+identificar
+
+\textbf{Red}: Desarrollados a la par de los modelos relacionales, en
+este modelo los nodos no tienen una relación definida ni limitada con
+sus pares. Cada registro puede tener diferentes precedentes, por lo que
+no existe un único camino para llegar a un registro en particular.
+Pueden eliminarse nodos sin que esto afecte directamente a la totalidad
+de la red
+
+\textbf{Relacional:} Se trata del modelo mas generalizado y popular en
+la actualidad. Usa como lenguaje de consulta el SQL, y su modelado se
+basa en el empleo de tablas y relaciones. Las tablas determinan la
+ubicación de cada dato; cada dato conforma un registro (fila) y se
+guardan como atributos (columna). Se utilizan claves para acceder a los
+datos
+
+\textbf{Orientado a objetos:} Aparecen en los 80s pero con escasa
+aplicabilidad. Se guardan en los objetos los métodos necesarios para
+acceder a la información
+
+\textbf{Orientado a documentos}: Los documentos son la unidad de básica
+de almacenamiento. Cada dato, guardados en documentos individuales,
+consta de una clave y de un valor. No se define una cantidad de pares
+clave valor, lo que genera que la disparidad entre documentos exista
+\end{quote}
+
+\begin{itemize}
+\item
+  \textbf{Componentes básicos}
+\end{itemize}
+
+\begin{quote}
+Los componentes mas básicos requeridos para soportar una base de datos
+son los siguientes:
+
+CPU: El cerebro de la maquina. Se encarga de gestionar las consultas y
+la transacción de los datos
+
+Memoria RAM: Fundamental para la rapidez de los datos, al mantener en
+cache las consultas mas frecuentes o las relaciones mas predominantes.
+
+Almacenamiento: Unidades físicas donde se almacenan los datos para su
+persistencia. Para las tareas de consulta de una base de datos, se
+prefiere unidades del tipo SSD para las lecturas rapidas
+
+Hardware de Red: Equipo que permita comunicarse con la red para las
+comunicaciones al servidor de la base de datos.
+\end{quote}
+
+\begin{itemize}
+\item
+  \textbf{Estado actual del arte}
+\end{itemize}
+
+\begin{quote}
+La computación se encuentra en constante cambio y evolución. Las
+novedades que conciernen a la base de datos en la actualidad estan
+profundamente relacionadas con la llegada y el auge de la inteligencia
+artificial. La tendencia marca que las bases de datos estan dejando de
+ser simples repositorios de información, para pasar a ser plataformas
+inteligentes y autónomas, capaces de hacer transacciones con la IA.
+
+Funcionalidades como la búsqueda vectorial comienzan a ser nativas en
+diferentes arquitecturas de bases de datos, sin requerir
+especialización. Tambien comienzan a difuminarse las fronteras entre
+bases de datos exclusivas para transacciones y analisis.
+
+Aunado a esto, las bases de datos pueden moldearse para ser aptas para
+agentes de IA que escriben y ejecutan codigo, con un catalogo semántico
+y un espacio seguro para el codigo creado.
+
+Se ve una marcada consolidación del PostgreSQL como base de datos de
+referencia para las IAs, debido a su codigo abierto y flexibilidad
+\end{quote}
+
+\begin{itemize}
+\item
+  \textbf{Tabla con los componentes y presupuesto}
+\end{itemize}
+
+1-Placa madre: ASUS ProArt X870E-CREATOR WiFi \$494,99.
+
+Motivos:
+
+\begin{itemize}
+\item
+  PCIe 5.0 en 2 slots M.2: Mayor velocidad de lectura/escritura, menor
+  latencia y más IOPS en el almacenamiento NVMe.
+\item
+  soporte ECC: Para futuras actualizaciones.
+\item
+  VRM de 16+2+2 fases: Garantizas entrega de energía estable al CPU bajo
+  carga sostenida 24/7.
+\item
+  4 slots ram- permite llegar 256 gb de DDR5.
+\end{itemize}
+
+link:https://www.amazon.com/-/es/ProArt-X870E-CREATOR-completo-generaci\%C3\%B3n-potencia/dp/B0DF123GCV
+
+2- Cpu: AMD Ryzen 9 9950X3d \$639.99.
+
+Motivos:
+
+- Memoria l3 de 144 mb: Permite mantener mas índices calientes con el
+fin de incrementar la velocidad de respuesta.
+
+- 16 núcleos / 32 hilos: Alta concurrencia, múltiples consultas
+simultáneas sin colas.
+
+-Soporte ECC: preparado para RAM ECC en una futura actualización.
+
+link:https://www.amazon.com/-/es/AMD-Ryzen-9950X3D-procesador-n\%C3\%BAcleos/dp/B0DVZSG8D5
+
+3- ram: G.Skill Trident Z5 RGB 64GB DDR5 6400 CL32 \$858.
+
+Motivos:\\
+64GB DDR5 --- mayor capacidad en RAM significa menos accesos al disco,
+queries más rápidas.
+
+6400MHz --- mayor frecuencia que otros kits considerados, más ancho de
+banda para el motor de BD.
+
+CL32 --- baja latencia, respuesta más rápida en accesos aleatorios
+frecuentes.
+
+AMD EXPO --- perfil nativo para AM5, rendimiento máximo garantizado sin
+configuración manual.
+
+Disipador incluido --- temperatura estable bajo carga sostenida 24/7.
+
+link:https://www.amazon.com/-/es/G-Skill-Trident-6400MHz-1-40V-doble/dp/B0BSP5F4CN
+
+4-NVMe OS: Samsung 990 Pro 1TB \$249,99.
+
+Motivos:
+
+\begin{itemize}
+\item
+  Disco dedicado exclusivo al OS: Evita competencia por el canal de I/O
+  con la BD.
+\item
+  Aislamiento de fallos: Si un disco falla el otro no se ve afectado.
+\item
+  PCIe Gen4 suficiente: el OS no se beneficia de la velocidad de gen5.
+\end{itemize}
+
+link:https://www.amazon.com/-/es/Samsung-velocidades-secuencial-computaci\%C3\%B3n-estaciones/dp/B0BHJF2VRN
+
+5-NVMe BS:WD Black SN8100 2TB Gen5 \$430,28
+
+Motivos:
+
+\begin{itemize}
+\item
+  PCIe Gen5: Máxima velocidad de lectura/escritura para acceso constante
+  a datos.
+\item
+  2.3 millones de IOPS: Operaciones aleatorias de alta velocidad.
+\item
+  2TB de capacidad.
+\item
+  Heatsink: Temperatura estable bajo carga sostenida.
+\end{itemize}
+
+link:https://www.amazon.com/-/es/WD\_Black-disipador-velocidad-escritura-aplicaciones/dp/B0F3H14JQG
+
+6-Fuente de poder: be quiet! Power Zone 2 750W 80+ Platinum \$99.90
+
+\begin{itemize}
+\item
+  80+ Platinum: Mínimo desperdicio de energía en la conversión de
+  corriente alterna (AC) a corriente continua (DC),menos calor y menor
+  consumo eléctrico para carga sostenida.
+\item
+  750W:margen suficiente para alimentar a todos los componentes.
+\item
+  Zero RPM: Ventilador silencioso a baja carga, ideal para operación
+  continua.
+\item
+  ATX 3.1 / PCIe 5.1: compatibilidad con estándares modernos para
+  futuras actualizaciones.
+\end{itemize}
+
+link:
+https://www.amazon.com/-/es/quiet-alimentaci\%C3\%B3n-Eficiencia-Cybenetics-BP006US/dp/B0DVJGSK2W
+
+7-Refrigeración:Noctua NH-D15S \$104.95
+
+Motivos:
+
+\begin{itemize}
+\item
+  Refrigeración por aire: Mas confiable a largo plazo que la
+  refrigeración liquida para carga sostenida.
+\item
+  Doble torre: Mayor superficie de disipación para manejar los 170W TDP
+  del 9950X3D bajo carga sostenida.
+\item
+  Diseño: 65mm de espacio libre para la RAM, evita conflictos de
+  compatibilidad física con los módulos DDR5.
+\end{itemize}
+
+link:https://www.amazon.com/-/es/Noctua-NH-D15S-Enfriador-premium-ventilador/dp/B00XUVGLEU
+
+8-Carcasa: Lian Li LANCOOL 217 \$119,99.
+
+Motivos:
+
+\begin{itemize}
+\item
+  5 ventiladores pre-instalados --- 2x170mm frontales, 2x120mm
+  laterales, 1x140mm trasero, para una correcta cobertura de aire.
+\item
+  Diseño orientado al flujo de aire: Ideal para operación sostenida.
+\item
+  Espacio para expansión: instalación flexible de PSU y cables dejando
+  espacio para discos adicionales.
+\end{itemize}
+
+link:https://www.amazon.com/dp/B0DWF95QP7
+
+Totalizacion:\$494.99 + \$639.99 + \$858.00 + \$249.99 + \$430.28 + \$99.90 + \$104.95 + \$119.99 = \$2,998.09
+
+\end{document}
