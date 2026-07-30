@@ -1,0 +1,92 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{a4paper, margin=2.5cm}
+
+\title{ARQUITECTURA DEL COMPUTADOR \\ INFORME PRÁCTICA DE LABORATORIO 1}
+\author{Nombre: Victor Pinto, Ci: 31709216\underline{}}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Pregunta 1}
+¿Cómo se implementa la recursividad en MIPS32? ¿Qué papel cumple la pila ($sp$)?
+
+La recursividad emplea procedimientos no hoja que constantemente se llaman a sí mismos. Poseen un caso base y un caso recursivo: el caso base se encarga de retornar el valor después de que se llegue a este a través de la disminución de un parámetro; el caso recursivo pregunta una condición que, de ser cumplida, se irá al caso base, o en su defecto se llamará nuevamente la función. Se usan las instrucciones \texttt{jal} para saltar al procedimiento y la instrucción \texttt{jr \$ra} para retornar a la última dirección.
+
+Al ser un procedimiento, se cargan en la pila (\$sp) los parámetros de entrada y la dirección de retorno. Debido a que la recursividad crea constantemente nuevas instancias, en cada una de ellas se accede a la pila para cargar los parámetros, que pertenecen a una instancia determinada.
+
+\section*{Pregunta 2}
+¿Qué riesgos de desbordamiento existen? ¿Cómo mitigarlos?
+
+Debido a la naturaleza de la recursión, el principal riesgo que existe es el desbordamiento de memoria o de la pila. Si se crean muchísimas instancias, la dirección de la pila apuntará a direcciones que no le fueron asignadas, causando un \textit{stack overflow}. Para mitigar este problema, puede usarse recursión de cola, hacer uso de memoria dinámica, o simplemente optimizar el comportamiento de la recursión.
+
+\section*{Pregunta 3}
+¿Qué diferencias encontraste entre una implementación iterativa y una recursiva en cuanto al uso de memoria y registros?
+
+La diferencia más evidente está en que la implementación iterativa, a diferencia de la recursiva, no hace uso de la pila para ejecutarse. La iteración requiere registros para controlar los lazos, hacer uso de \texttt{j} para iterarse, y registros con los que operar aritméticamente y guardar el resultado. La recursión necesita hacer uso de la pila para guardar sus parámetros y los valores de retorno, a medida que se profundizan las instancias.
+
+\section*{Pregunta 4}
+¿Qué diferencias encontraste entre los ejemplos académicos del libro y un ejercicio completo y operativo en MIPS32?
+
+Los ejercicios académicos solo contienen el grueso de las instrucciones de MIPS. En simuladores como MARS, hay secciones importantes para un código real operativo, como la sección \texttt{.data} y \texttt{.text}, en donde se guardan en memoria los datos con los que se va a trabajar y la entrada a la función principal del programa respectivamente.
+
+\section*{Pregunta 5}
+Elaborar un tutorial de la ejecución paso a paso en MARS.
+
+\subsection*{Tutorial para implementación recursiva}
+\begin{enumerate}
+    \item Cargamos nuestro parámetro con la entrada deseada ($n$).
+    \item Hacemos \texttt{jal} (\textit{jump and link}) para llamar la función recursiva.
+    \item Reservamos en pila tanto el parámetro con nuestra $n$ como el registro de retorno \$ra.
+    \item Se comprueba la condición: \texttt{bne} pregunta si $n$ es igual al registro \$zero.
+    \item Se saltará a la etiqueta \texttt{rec} si los registros no son iguales, siendo \texttt{rec} la parte del caso recursivo.
+    \item Se disminuye el parámetro ($n-1$) y se llama a la función paridad con \texttt{jal}.
+    \item A medida que el parámetro disminuye, se crean nuevas instancias. Al llegar a $n=0$, el registro \$v0 almacena 0. Se libera la pila, antes de devolverse a la última llamada usando \texttt{jr \$ra}.
+    \item Cuando una de las instancias recibe la batuta, se carga de la pila el parámetro y el registro de retorno, se le suma 1 a lo retornado y a su vez se devuelve el \$v0 actualizado.
+    \item Se repite este proceso hasta llegar a la primera instancia original, que finalmente devuelve la salida.
+\end{enumerate}
+
+\subsection*{Tutorial para implementación iterativa}
+\begin{enumerate}
+    \item Cargamos nuestro parámetro con la entrada deseada ($n$).
+    \item Hacemos \texttt{jal} (\textit{jump and link}) para llamar la función iterativa.
+    \item Reservamos en pila tanto el parámetro con nuestra $n$ como el registro de retorno \$ra.
+    \item Declaramos una variable para iterar en 0.
+    \item Hacemos un lazo llamado \texttt{while} que pregunta constantemente si $n > 0$. De no serlo, saltará a la salida.
+    \item Nuestro iterador crece, y si este llega a ser mayor que 1, se resetea a 0.
+    \item El parámetro disminuye, y cuando llegue a 0, retornamos el valor de nuestro iterador.
+\end{enumerate}
+
+\section*{Pregunta 6}
+Justificar la elección del enfoque (iterativo o recursivo) según eficiencia y claridad en MIPS.
+
+Para valores muy grandes la elección se debe dirigir a la implementación iterativa, pues es la más óptima en cuanto al consumo de recursos de espacio. El desarrollo de la iteración es más comprensible al momento de leer código, a diferencia de la recursión que requiere un mayor nivel de abstracción, y en donde el uso de la pila puede ser difuso. La iteración usa operaciones aritméticas básicas e instrucciones de MIPS bien conocidas.
+
+\section*{Pregunta 7}
+Análisis y Discusión de los Resultados
+
+\subsection*{Casos básicos}
+Con casos simples, en donde la entrada son números pequeños, el comportamiento de ambas implementaciones es el esperado y casi iguales: la salida arroja 1 para números impares y 0 para números pares.
+
+\subsection*{Casos especiales}
+Hay una diferencia sustancial en la ejecución de ambas implementaciones cuando la entrada es un número más grande. Se ingresó el número 1505001, el cual está dentro del rango de una palabra en MIPS.
+
+\begin{itemize}
+    \item \textbf{Implementación iterativa:} La función tarda unos cuantos segundos en arrojar el resultado, pero se ejecuta con normalidad y finaliza el programa sin \textit{bugs}.
+    \item \textbf{Implementación recursiva:} La terminal de MARS manda el siguiente mensaje: \\
+    \texttt{paridad\_recur.asm line 29: Runtime exception at 0x0040002c: address out of range 0x7fbffffc}
+\end{itemize}
+
+\subsection*{Explicación}
+La función iterativa resta de 1 en 1 el número, repitiéndose constantemente en el lazo, lo cual no produce ningún desbordamiento en la memoria, pero lleva más tiempo su finalización.
+
+Ahora, la función recursiva no se compila correctamente y causa un error de desbordamiento. El mensaje \texttt{address out of range 0x7fbffffc} ejemplifica lo que se había discutido antes: el puntero de la pila, al quedarse sin espacio, accede a una dirección inválida fuera de su rango, debido a la alta cantidad de instancias creadas que un número así de grande requiere.
+
+\end{document}
