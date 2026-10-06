@@ -1,0 +1,160 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\geometry{a4paper, margin=2.5cm}
+
+\title{ARQUITECTURA DEL COMPUTADOR \\ INFORME PRÁCTICA DE LABORATORIO 3}
+\author{Nombre: Victor Pinto, CI: 31709216}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Pregunta 1}
+Explique con un diagrama cómo funciona el ciclo de una interrupción de hardware (desde que ocurre el evento hasta que se atiende).
+
+Se produce un evento cuando un dispositivo envia una petición para interrumpir el flujo del programa y que la CPU tome las riendas, mediante el registro cause que contiene la causa de la interrupción. La instrucción que la CPU estaba trabajando es, por lo general, concluida. Se verifica si las interrupciones se encuentran habilitadas, y de estarlo, el CPU guarda el contexto en el que fue interrumpido, guardando el PC actual, cambiando al modo Kernel y llevando la dirección que se encarga de manejar el dispositivo al PC. Luego el dispositivo es atendido por el manejador no sin antes guardar los registros en stack y leer la causa. Finalmente, el CPU retoma el programa y se restaura la dirección de la instrucción actual con el EPC.
+
+\begin{center}
+\begin{tikzpicture}[
+    node distance=1.1cm and 1.6cm,
+    every node/.style={font=\small},
+    block/.style={
+        rectangle,
+        draw,
+        rounded corners,
+        align=center,
+        minimum width=4.5cm,
+        minimum height=1cm,
+        fill=blue!8
+    },
+    decision/.style={
+        diamond,
+        draw,
+        align=center,
+        aspect=2.2,
+        inner sep=1pt,
+        fill=orange!15
+    },
+    arrow/.style={-{Stealth[length=2.5mm]}, thick}
+]
+
+
+\node[block] (evento) {Dispositivo envía petición de interrupción \\ (registro \textit{cause} indica la causa)};
+\node[block, below=of evento] (concluir) {CPU concluye la instrucción actual};
+\node[decision, below=of concluir] (habilitada) {¿Interrupciones\\habilitadas?};
+\node[block, below=of habilitada] (guardar) {CPU guarda el contexto:\\PC actual, cambia a modo Kernel,\\carga dirección del manejador en PC};
+\node[block, below=of guardar] (manejador) {Manejador atiende al dispositivo:\\guarda registros en stack,\\lee la causa};
+\node[block, below=of manejador] (retomar) {CPU retoma el programa:\\restaura la dirección con el EPC};
+
+
+\draw[arrow] (evento) -- (concluir);
+\draw[arrow] (concluir) -- (habilitada);
+\draw[arrow] (habilitada) -- node[right] {Sí} (guardar);
+\draw[arrow] (guardar) -- (manejador);
+\draw[arrow] (manejador) -- (retomar);
+
+
+\draw[arrow] (habilitada.east) -- ++(2.2,0) |- node[pos=0.75, right] {No (se ignora)} (concluir.east);
+
+\end{tikzpicture}
+\end{center}
+
+\section*{Pregunta 2}
+¿Qué diferencias hay entre gestionar E/S con sondeo y hacerlo con interrupciones?
+
+Durante el sondeo, es la propia CPU la que se encarga de preguntar a los dispositivos si tiene alguna tarea pendiente, hasta que el dispositivo emita una respuesta. Debido a esto, la CPU no puede dedicarse a realizar otras acciones. Las interrupciones en cambio, van desde un dispositivo hacia la CPU, sin que este ultimo deba realizar la consulta. El sondeo no requiere el salvamiento del contexto o de los registros, a diferencia de una interrupción.
+
+\section*{Pregunta 3}
+¿Qué ventajas tiene el uso de interrupciones en términos de uso del procesador?
+
+Durante una interrupción, la CPU puede entrar en un estado de espera sin quedarse completamente inactivo, pudiendo ocuparse de otras tareas en segundo plano, hasta que el dispositivo concluya el ciclo de vida de su instrucción. La latencia entre el dispositivo y la CPU es baja, con lo cual se le avisa inmediatamente al procesador cual es la naturaleza de la instrucción y su ejecución.
+
+\section*{Pregunta 4}
+¿Qué registros especiales se utilizan en MIPS32 para gestionar interrupciones?
+
+Mips reserva dos registros para las interrupciones: El cause register y el EPC (Exception program counter). El primero almacena el porque de una interrupción, y el segundo, el EPC, contiene la dirección actual de la instrucción donde se generó dicha interrupción, o excepción.
+
+\section*{Pregunta 5}
+¿Por qué es necesario guardar el contexto (registros) al entrar en una rutina de servicio?
+
+Tanto el programa como el dispositivo cuentan con los mismos 32 registros. Sin embargo, y como el contexto en que se usan son diferentes, pueden alterarse o corromperse los registros cuyo contenido estaba siendo usado previamente por el programa, ocasionando errores o comportamientos indefinidos. Los registros usados por el dispositivo se restauran antes de que la CPU retome el control, garantizando que el programa siga su curso.
+
+\section*{Pregunta 6}
+Momentos en que pueden generarse excepciones en un sistema MIPS32.
+
+\subsection*{a) Enumera al menos 4 situaciones en las que se pueda generar una excepción (por ejemplo: desbordamiento aritmético, fallo de dirección, etc.).}
+
+Se generan excepciones cuando:
+\begin{itemize}
+    \item Se encuentra una instrucción no definida: Ocurre cuando en la memoria de instrucciones el procesador se topa con una instrucción que no existe.
+    \item Sucede un desbordamiento aritmético: cuando un registro recibe un dato que excede su capacidad, aun con el signo extendido.
+    \item Invocación del sistema operativo: Se realiza una llamada al sistema operativo, o syscall, para que este tome el control.
+    \item Error de hardware: Alguna excepción arrojada por errores inesperados ajenos al programa.
+\end{itemize}
+
+\subsection*{b) Explica qué etapas del pipeline pueden provocar una excepción y por qué.}
+
+Durante la etapa de identificación puede ocurrir una excepción al toparse con una instrucción no definida. La lectura y escritura en memoria en etapas como MEM pueden contener datos corruptos o erróneos a nivel de direcciones. Las operaciones de la ALU, en EX, podrían ocasionar desbordamientos u operaciones entre datos.
+
+\section*{Pregunta 7}
+Estrategias de tratamiento de excepciones e interrupciones.
+
+\subsection*{a) Explica las diferencias entre interrupciones y excepciones (¿son síncronas o asíncronas?)}
+
+Las interrupciones detienen al programa de manera no inesperada y son, por lo general, externas al procesador. Esto significa que son inducidas ya sea por dispositivos de entrada y salida, o mediante llamadas al sistema. La excepción en cambio, son paralizaciones del flujo del programa inesperadas y ocasionadas por múltiples motivos relacionados a errores de hardware, desbordamiento, entre otros, siendo internos. Las excepciones pueden ser asíncronas en tanto se produzcan debido a una instrucción, mientras que las interrupciones pueden detener al programa sin estar vinculado con su ciclo de vida.
+
+\subsection*{b) Describe brevemente dos estrategias para tratar excepciones en un sistema MIPS32 ¿Cómo se redirige la ejecución hacia la rutina de servicio? ¿Cuál es la función del registro EPC (Exception Program Counter)?}
+
+En Mips 32, existen dos maneras: La primera hace uso tanto del registro cause como el EPC para manejar las excepciones, conocer su origen y causa. La otra, es llamada interrupción vectorizada, en donde, en función de la excepción que se trate, la dirección será transferida a un control u otro. El EPC, guarda la dirección de la última dirección ejecutada durante una excepción.
+
+\section*{Pregunta 8}
+Habilitación de interrupciones en dispositivos y procesador.
+
+\subsection*{a) Explica cómo se habilitan las interrupciones en: El teclado. La pantalla. El procesador (detalla qué bits del registro Status deben modificarse)}
+
+Para el teclado: Se escribe en su registro de control, cuya dirección es 0xFFFF0000. Al colocar su primer bit a 1, el teclado estará habilitado para ejercer una interrupción. El bit 8 del registro cause se activará para indicar la solicitud del teclado.
+
+Para la pantalla: El proceso es homologo al dispositivo teclado, con la dirección 0xFFFF0008.
+
+Para el procesador: El registro encargado, status, tendrá su primer bit a 1 para aceptar, globalmente, cualquier clase de interrupción. Los bits 8 y 12, para teclado y pantalla respectivamente, deben estar activados para recibir sus interrupciones.
+
+\subsection*{b) ¿Qué pasaría si habilitamos interrupciones en los dispositivos, pero no en el procesador?}
+
+Si el registro status del procesador no se encuentra activado para aceptar interrupciones, el CPU simplemente ignorará la solicitud y seguirá con el flujo normal del programa, sin haber un salto al manejador.
+
+\section*{Pregunta 9}
+Procesamiento de interrupciones.
+
+\subsection*{a) Describe paso a paso qué ocurre cuando se produce una interrupción de reloj: Desde que el evento ocurre hasta que la rutina de servicio termina. ¿Qué registros se guardan y restauran? ¿Qué hace el hardware y qué hace el software (sistema operativo o rutina)?}
+
+Al dispararse la interrupcion del reloj, se activa su línea de interrupcion para realizar la solicitud al procesador. La CPU concluye la tarea que estaba haciendo y verifica si puede atender interrupciones. El hardware, el cual también envio la línea de interrupcion del reloj, se encarga de guardar los registros EPC, cause y status, mientras que el software salva los registros de propósito general en el stack. Cuando se atiende el timer, este se reinicia para la siguiente interrupcion, de lo cual se encarga el software. Finalmente, los registros guardados, \$at, \$v0-v1, \$a0-a3 y \$t0-t9 son restaurados.
+
+\subsection*{b) ¿Por qué es importante guardar el contexto (registros generales, EPC, Status) al entrar en la rutina?}
+
+El procesador debe conocer con que información contaba antes de haber atendido la interrupción. Para que el correcto flujo del programa este garantizado, se salvan los registros, se identifican la causa de la excepción y la dirección en donde ocurrió, así como el status para saber que interrupciones podrán ejecutarse en un futuro.
+
+\section*{Pregunta 10}
+Interrupciones de reloj y control de ejecución.
+
+\subsection*{a) Explica cómo una interrupción de reloj puede usarse para: Evitar que un programa quede en un bucle infinito. Finalizar programas que superan un tiempo máximo de ejecución}
+
+Si la CPU queda volcada a un ciclo infinito, la interrupcion del reloj, dirigida por el hardware, puede revisar periodamente el estado de la CPU, sin que este pueda evitar la interrupcion generada. El sistema puede recuperar el control de la CPU, terminando el proceso o redirigiendo al procesador. Por otra parte, un timer puede ser usado como un techo, para que, si un programa supera cierta cantidad de ticks o tiempo, el sistema lo interrumpa y finalice su ejecución.
+
+\subsection*{b) ¿Qué debe hacer el software si el programa finaliza antes de que ocurra la interrupción de reloj?}
+
+El software, al terminar un programa, debe liberar correctamente sus recursos y no modificar ningún proceso venidero. La interrupcion del reloj o timer sucederá igualmente, pasando al siguiente proceso.
+
+\section*{Pregunta 11}
+Análisis y Discusión de los Resultados.
+
+Los programas desarrollados durante esta práctica, la simulación de un buffer y de un semáforo, nos demostraron el funcionamiento de las interrupciones del sistema con mayor profundidad. Utilizando la herramienta MMIO del ambiente Mars, pudimos simular el manejador del teclado como dispositivo. Se hizo uso de la técnica de sondeo para verificar constantemente si los periféricos se hallaban enviando solicitudes al procesador. Finalmente, los resultados son impresos en pantalla mediante llamadas al sistema.
+
+\end{document}
